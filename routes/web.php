@@ -16,5 +16,8 @@
 
         Route::namespace('System')->group(function() {
             Route::middleware('can:roles.manage')->resource('roles','RolesController');
+            Route::middleware('can:departments.manage')->resource('departments','DepartmentsController');
+            Route::middleware('can:divisions.manage')->resource('divisions','DivisionsController');
+            Route::middleware('can:certs.manage')->resource('certifications','CertificationsController');
         });
     });

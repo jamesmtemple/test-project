@@ -42,6 +42,9 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                   @if(Auth::user()->hasPermission("roles.manage"))<a class="dropdown-item" href="{{ route('roles.index') }}">Roles</a>@endif
+                                  @if(Auth::user()->hasPermission("departments.manage"))<a class="dropdown-item" href="{{ route('departments.index') }}">Departments</a>@endif
+                                  @if(Auth::user()->hasPermission("divisions.manage"))<a class="dropdown-item" href="{{ route('divisions.index') }}">Divisions</a>@endif
+                                  @if(Auth::user()->hasPermission("certs.manage"))<a class="dropdown-item" href="{{ route('certifications.index') }}">Certifications</a>@endif
                                   <!-- <a class="dropdown-item" href="#"></a> -->
                                 </div>
                             </li>

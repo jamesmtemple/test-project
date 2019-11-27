@@ -3,6 +3,7 @@
   use Illuminate\Http\Request;
   use App\Models\Role;
   use App\Models\Permission;
+  use App\Models\Department;
   use Illuminate\Support\Facades\Cache;
   use Illuminate\Support\Facades\Redirect;
 
@@ -16,7 +17,7 @@
       public function index(Request $request)
       {
           $roles = Cache::remember("roles", 10080, function() {
-              return Role::all();
+              return Role::with(['division','department','division.department'])->get();
           });
 
           return view('system.roles.index')
@@ -34,8 +35,18 @@
               return Permission::all();
           });
 
+          $departments = Cache::remember("departments", 10080, function(){
+              return Department::all();
+          });
+
+          $divisions = Cache::remember("divisions", 10080, function(){
+              return Division::all();
+          });
+
           return view('system.roles.create')
-            ->withPermissions($permissions->groupBy('category'));
+            ->withPermissions($permissions->groupBy('category'))
+            ->withDivisions($divisions)
+            ->withDepartments($departments);
       }
 
       /**
@@ -48,7 +59,9 @@
       {
           $attributes = $request->validate([
               'name'          => ['required','unique:roles'],
-              'type'          => ['required','integer']
+              'type'          => ['required','integer'],
+              'department_id' => ['sometimes'],
+              'division_id'   => ['sometimes']
           ]);
 
           Role::create($attributes)
@@ -76,9 +89,19 @@
               return Permission::all();
           });
 
+          $departments = Cache::remember("departments", 10080, function(){
+              return Department::all();
+          });
+
+          $divisions = Cache::remember("divisions", 10080, function(){
+              return Division::all();
+          });
+
           return view('system.roles.edit')
             ->withRole($role)
-            ->withPermissions($permissions->groupBy('category'));
+            ->withPermissions($permissions->groupBy('category'))
+            ->withDivisions($divisions)
+            ->withDepartments($departments);
       }
 
       /**
@@ -92,7 +115,9 @@
       {
           $attributes = $request->validate([
               'name'          => ['required','unique:roles,name,' . $role->id],
-              'type'          => ['required','integer']
+              'type'          => ['required','integer'],
+              'department_id' => ['sometimes'],
+              'division_id'   => ['sometimes']
           ]);
 
           $role->update($attributes);

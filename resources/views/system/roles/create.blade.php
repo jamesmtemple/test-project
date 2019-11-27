@@ -15,10 +15,30 @@
 
                   <div class="form-group">
                       <label for="abbr">Type</label>
-                      <select class="form-control" id="department_id" name="type">
+                      <select class="form-control" id="department_id" name="type" v-model="type">
                           <option value="1">Global</option>
                           <option value="2">Department</option>
                           <option value="3">Division</option>
+                      </select>
+                  </div>
+
+                  <div v-if="type == 2" class="form-group">
+                      <label for="abbr">Department</label>
+                      <select class="form-control" id="department_id" name="department_id">
+                        <option value="0">Select a Department....</option>
+                        @foreach($departments as $department)
+                          <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
+                      </select>
+                  </div>
+
+                  <div v-if="type == 3" class="form-group">
+                      <label for="abbr">Division</label>
+                      <select class="form-control" id="division_id" name="division_id">
+                        <option value="0">Select a Division....</option>
+                        @foreach($divisions as $division)
+                          <option value="{{ $division->id }}">{{ $division->name }}</option>
+                        @endforeach
                       </select>
                   </div>
               </div>
@@ -43,4 +63,16 @@
             </div>
               <button class="btn btn-primary">Save</button>
           </form>
+    @endsection
+
+    @section('scripts')
+        <script type="text/javascript">
+            new Vue({
+                el: "#app",
+
+                data: {
+                  type: "1"
+                }
+            });
+        </script
     @endsection

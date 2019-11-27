@@ -21,7 +21,7 @@ class CreateRolesTable extends Migration
             $table->boolean('type');
 
             $table->integer('department_id')->nullable();
-            $table->integer('role_id')->nullable();
+            $table->integer('division_id')->nullable();
 
             $table->timestamps();
         });

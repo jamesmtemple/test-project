@@ -1,35 +1,17 @@
 <?php namespace App\Models;
     use Illuminate\Database\Eloquent\Model;
 
-    class Role extends Model
+    class Certification extends Model
     {
-        protected $fillable = ['name', 'type', 'department_id','division_id'];
-
-        public function users() {
-            return $this->belongsToMany(User::class);
-        }
+        protected $fillable = ['name','abbr','type','department_id','division_id'];
 
         public function getScopeAttribute() {
             switch($this->type) {
                 case 1:
-                  return "Global";
-                case 2:
                   return $this->department->name;
-                case 3:
+                case 2:
                   return $this->division->department->abbr . " - " . $this->division->name;
             }
-        }
-
-        public function permissions() {
-            return $this->belongsToMany(Permission::class);
-        }
-
-        public function hasPermission($name) {
-            $list = $this->permissions->map(function ($item, $key) {
-                return $item->name;
-            });
-
-            return $list->contains($name);
         }
 
         public function department() {
@@ -38,5 +20,17 @@
 
         public function division() {
             return $this->hasOne(Division::class,"id","division_id");
+        }
+
+        public function permissions() {
+          return $this->belongsToMany(Permission::class);
+        }
+
+        public function hasPermission($name) {
+            $list = $this->permissions->map(function ($item, $key) {
+                return $item->name;
+            });
+
+            return $list->contains($name);
         }
     }
