@@ -4,6 +4,7 @@
   use App\Models\Role;
   use App\Models\Permission;
   use App\Models\Department;
+  use App\Models\Division;
   use Illuminate\Support\Facades\Cache;
   use Illuminate\Support\Facades\Redirect;
 

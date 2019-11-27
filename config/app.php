@@ -1,7 +1,15 @@
 <?php
 
 return [
-
+    /*
+     * These roles are not allowed access to the CAD system. At this time, trainees are not permitted to access until their training has been complete.
+     */
+    'banned_roles'      => [
+        'LEO Trainee',
+        'Fire Department Trainee',
+        'CIV Trainee',
+        'Dispatch Trainee'
+    ],
     /*
     |--------------------------------------------------------------------------
     | Application Name

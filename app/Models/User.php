@@ -29,18 +29,20 @@
             return $this->belongsToMany(Role::class);
         }
 
+        public function certifications() {
+            return $this->belongsToMany(Certification::class);
+        }
+
         public function hasPermission($name) {
             $permissions = collect([]);
-            
+
             foreach($this->roles as $role) {
                 $permissions = $permissions->merge($role->permissions);
             }
 
-            /*
             foreach($this->certifications as $certification) {
                 $permissions = $permissions->merge($certification->permissions);
             }
-            */
 
             return $permissions->pluck('slug')->contains($name);
         }
@@ -56,13 +58,11 @@
 
             }
 
-            /*
             foreach($this->certifications as $certification) {
               foreach($permissions as $permission) {
                   $showSection = ($certification->hasPermission($permission->name)) ? true : $showSection;
               }
             }
-            */
 
             return $showSection;
         }

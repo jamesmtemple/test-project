@@ -16,7 +16,7 @@
                 case 2:
                   return $this->department->name;
                 case 3:
-                  return $this->division->department->abbr . " - " . $this->division->name;
+                  return $this->division->name;
             }
         }
 

@@ -33,8 +33,8 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     @auth
+                        <ul class="navbar-nav mr-auto">
                         @if(Auth::user()->hasSection("system-admin"))
-                          <ul class="navbar-nav mr-auto">
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     System Admin <span class="caret"></span>
@@ -48,8 +48,20 @@
                                   <!-- <a class="dropdown-item" href="#"></a> -->
                                 </div>
                             </li>
-                          </ul>
                         @endif
+
+                        @if(Auth::user()->hasSection("structure-admin"))
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    Structure Admin <span class="caret"></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                  @if(Auth::user()->hasPermission("types.manage"))<a class="dropdown-item" href="{{ route('types.index') }}">Unit Types</a>@endif
+                                </div>
+                            </li>
+                        @endif
+                        </ul>
                     @endauth
 
                     <!-- Right Side Of Navbar -->

@@ -19,5 +19,6 @@
             Route::middleware('can:departments.manage')->resource('departments','DepartmentsController');
             Route::middleware('can:divisions.manage')->resource('divisions','DivisionsController');
             Route::middleware('can:certs.manage')->resource('certifications','CertificationsController');
+            Route::middleware('can:types.manage')->resource('types','TypesController');
         });
     });

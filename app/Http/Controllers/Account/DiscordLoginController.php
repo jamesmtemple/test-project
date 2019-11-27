@@ -49,7 +49,13 @@
               return Redirect::route('login')
                 ->with([
                   "msg.type"      => "danger",
-                  "msg.text"      => "You are not a MidWestRP Member."
+                  "msg.text"      => "You are not a Midwest RP Member."
+                ]);
+            } catch(\Exception $e) {
+              return Redirect::route('login')
+                ->with([
+                  "msg.type"      => "danger",
+                  "msg.text"      => "You are not permitted to access the CAD at this time. If you believe this is a mistake, please contact your Department COC."
                 ]);
             }
         }
@@ -81,6 +87,11 @@
             foreach($serverRoles as $role){
               if(in_array($role->id, $member->roles)) {
                 $roleNames[] = $role->name;
+
+                // The user has a role that is banned by the configuration. Using a trainee role.
+                if(in_array($role->name, config('app.banned_roles'))) {
+                  throw new \Exception;
+                }
               }
             }
 

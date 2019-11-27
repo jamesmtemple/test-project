@@ -143,8 +143,16 @@
          * @param  int  $id
          * @return \Illuminate\Http\Response
          */
-        public function destroy($id)
+        public function destroy(Certification $certification)
         {
-            //
+            $certification->delete();
+
+            Cache::forget("certifications");
+
+            return Redirect::route("certifications.index")
+              ->with([
+                'msg.type'          => 'success',
+                'msg.text'          => "Certification '{$certification->name}' was edited successfully!"
+              ]);
         }
     }
