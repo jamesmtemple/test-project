@@ -1,16 +1,20 @@
 <?php
+    Route::view('/login','account.welcome')->name('login');
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+    Route::get('/login/init','Account\DiscordLoginController@redirect')->name('login.redirect');
+    Route::get('/login/auth','Account\DiscordLoginController@auth')->name('login.auth');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+    Route::middleware('auth')->group(function(){
+        Route::get('/','Account\DashboardController@index')->name('home');
+
+        Route::prefix('account')->name('account.')->namespace('Account')->group(function() {
+            Route::get('settings','SettingsController@edit')->name('settings');
+
+            Route::post('settings','SettingsController@update')->name('settings');
+            Route::post('logout','DiscordLoginController@logout')->name('logout');
+        });
+
+        Route::namespace('System')->group(function() {
+            Route::middleware('can:roles.manage')->resource('roles','RolesController');
+        });
+    });
