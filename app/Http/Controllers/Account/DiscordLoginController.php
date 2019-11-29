@@ -47,6 +47,8 @@
                 ]);
 
             } catch(CommandClientException $exception) {
+
+              dd($exception);
               return Redirect::route('login')
                 ->with([
                   "msg.type"      => "danger",
