@@ -13,11 +13,12 @@
     {
         public function redirect() {
             return \Socialite::with('discord')
+              ->stateless()
               ->redirect();
         }
 
         public function auth() {
-            $user = \Socialite::with('discord')->user();
+            $user = \Socialite::with('discord')->stateless()->user();
 
             $discord = new DiscordClient([
               'token' => config('services.discord.bot_key')
