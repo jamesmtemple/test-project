@@ -5,6 +5,7 @@
     use Illuminate\Support\Facades\Redirect;
     use App\Models\Division;
     use App\Models\Department;
+    use App\Models\Type;
 
     class DivisionsController extends Controller
     {
@@ -34,8 +35,13 @@
                 return Department::all();
             });
 
+            $types = Cache::remember("types", 10080, function() {
+                return Type::all();
+            });
+
             return view('system.divisions.create')
-              ->withDepartments($departments);
+              ->withDepartments($departments)
+              ->withTypes($types);
         }
 
         /**
@@ -52,9 +58,15 @@
                 'department_id' => ['sometimes']
             ]);
 
-            Division::create($attributes);
+            $division = Division::create($attributes);
+            $division
+              ->types()
+              ->attach($request->types);
+
 
             Cache::forget("divisions");
+            Cache::forget("certifications");
+            Cache::forget("roles");
 
             return Redirect::route("divisions.index")
               ->with([
@@ -75,9 +87,14 @@
                 return Department::all();
             });
 
+            $types = Cache::remember("types", 10080, function() {
+                return Type::all();
+            });
+
             return view('system.divisions.edit')
               ->withDivision($division)
-              ->withDepartments($departments);
+              ->withDepartments($departments)
+              ->withTypes($types);
         }
 
         /**
@@ -96,8 +113,13 @@
               ]);
 
               $division->update($attributes);
+              $division
+                ->types()
+                ->sync($request->types);
 
               Cache::forget("divisions");
+              Cache::forget("certifications");
+              Cache::forget("roles");
 
               return Redirect::route("divisions.index")
                 ->with([
@@ -117,6 +139,8 @@
             $division->delete();
 
             Cache::forget("divisions");
+            Cache::forget("certifications");
+            Cache::forget("roles");
 
             return Redirect::route("divisions.index")
               ->with([

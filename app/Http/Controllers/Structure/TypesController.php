@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers\System;
+<?php namespace App\Http\Controllers\Structure;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Redirect;
     use Illuminate\Support\Facades\Cache;
@@ -31,17 +31,7 @@
          */
         public function create()
         {
-            $departments = Cache::remember("departments", 10080, function(){
-                return Department::all();
-            });
-
-            $divisions = Cache::remember("divisions", 10080, function(){
-                return Division::all();
-            });
-
-            return view('structure.types.create')
-              ->withDivisions($divisions)
-              ->withDepartments($departments);
+            return view('structure.types.create');
         }
 
         /**
@@ -56,8 +46,6 @@
                 'name'          => ['required'],
                 'abbr'          => ['required'],
                 'type'          => ['required'],
-                'department_id' => ['sometimes'],
-                'division_id'   => ['sometimes']
             ]);
 
             Type::create($attributes);
@@ -72,25 +60,15 @@
         }
 
         /**
-         * Display the specified resource.
-         *
-         * @param  int  $id
-         * @return \Illuminate\Http\Response
-         */
-        public function show($id)
-        {
-            //
-        }
-
-        /**
          * Show the form for editing the specified resource.
          *
          * @param  int  $id
          * @return \Illuminate\Http\Response
          */
-        public function edit($id)
+        public function edit(Type $type)
         {
-            //
+            return view('structure.types.edit')
+              ->withType($type);
         }
 
         /**
@@ -100,9 +78,23 @@
          * @param  int  $id
          * @return \Illuminate\Http\Response
          */
-        public function update(Request $request, $id)
+        public function update(Request $request, Type $type)
         {
-            //
+            $attributes = $request->validate([
+                'name'          => ['required'],
+                'abbr'          => ['required'],
+                'type'          => ['required'],
+            ]);
+
+            $type->update($attributes);
+
+            Cache::forget("types");
+
+            return Redirect::route("types.index")
+              ->with([
+                'msg.type'          => 'success',
+                'msg.text'          => "Type '{$request->name}' was edited successfully!"
+              ]);
         }
 
         /**
@@ -111,8 +103,16 @@
          * @param  int  $id
          * @return \Illuminate\Http\Response
          */
-        public function destroy($id)
+        public function destroy(Type $type)
         {
-            //
+            $type->delete();
+
+            Cache::forget("types");
+
+            return Redirect::route("types.index")
+              ->with([
+                'msg.type'          => 'success',
+                'msg.text'          => "Type '{$type->name}' was deleted successfully!"
+              ]);
         }
     }

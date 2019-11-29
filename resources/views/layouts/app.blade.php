@@ -34,7 +34,7 @@
                     <!-- Left Side Of Navbar -->
                     @auth
                         <ul class="navbar-nav mr-auto">
-                        @if(Auth::user()->hasSection("system-admin"))
+                        @if(Auth::user()->hasPermission("system.menu.view"))
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     System Admin <span class="caret"></span>
@@ -50,7 +50,7 @@
                             </li>
                         @endif
 
-                        @if(Auth::user()->hasSection("structure-admin"))
+                        @if(Auth::user()->hasPermission("structure.menu.view"))
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     Structure Admin <span class="caret"></span>
@@ -58,6 +58,24 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                   @if(Auth::user()->hasPermission("types.manage"))<a class="dropdown-item" href="{{ route('types.index') }}">Unit Types</a>@endif
+                                  @if(Auth::user()->hasPermission("plans.manage"))<a class="dropdown-item" href="{{ route('plans.index') }}">Response Plans</a>@endif
+                                  @if(Auth::user()->hasPermission("stations.manage"))<a class="dropdown-item" href="{{ route('stations.index') }}">Fire Stations</a>@endif
+                                </div>
+                            </li>
+                        @endif
+
+                        @if(Auth::user()->hasPermission("map.menu.view"))
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    Map Admin <span class="caret"></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                  @if(Auth::user()->hasPermission("streets.manage"))<a class="dropdown-item" href="{{ route('streets.index') }}">Streets</a>@endif
+                                  @if(Auth::user()->hasPermission("postals.manage"))<a class="dropdown-item" href="{{ route('postals.index') }}">Postals</a>@endif
+                                  @if(Auth::user()->hasPermission("subpostals.manage"))<a class="dropdown-item" href="{{ route('subpostals.index') }}">Subpostals</a>@endif
+                                  @if(Auth::user()->hasPermission("trailmarkers.manage"))<a class="dropdown-item" href="{{ route('trailmarkers.index') }}">Trailmarkers</a>@endif
+                                  @if(Auth::user()->hasPermission("grids.manage"))<a class="dropdown-item" href="{{ route('grids.index') }}">Grids</a>@endif
                                 </div>
                             </li>
                         @endif

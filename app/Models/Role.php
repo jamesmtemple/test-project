@@ -24,6 +24,10 @@
             return $this->belongsToMany(Permission::class);
         }
 
+        public function types() {
+            return $this->belongsToMany(Type::class);
+        }
+
         public function hasPermission($name) {
             $list = $this->permissions->map(function ($item, $key) {
                 return $item->name;
@@ -38,5 +42,9 @@
 
         public function division() {
             return $this->hasOne(Division::class,"id","division_id");
+        }
+
+        public function hasUnit($name) {
+            return $this->types->pluck('name')->contains($name);
         }
     }

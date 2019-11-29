@@ -11,7 +11,7 @@
                 <tr>
                   <th>Name</th>
                   <th>Abbreviation</th>
-                  <th>Scope</th>
+                  <th>Type</th>
                   <th>Actions</th>
                 </tr>
             </thead>
@@ -21,16 +21,16 @@
                     <tr>
                       <td>{{ $type->name }}</td>
                       <td>{{ $type->abbr }}</td>
-                      <td>{{ $type->department->name }}</td>
+                      <td>{{ $type->type_text }}</td>
                       <td>
-                        <a href="{{ route('apparatus.edit', $type) }}" class="btn btn-primary">Edit</a>
-                        <a class="btn btn-danger" href="{{ route('apparatus.destroy', $type) }}"
+                        <a href="{{ route('types.edit', $type) }}" class="btn btn-primary">Edit</a>
+                        <a class="btn btn-danger" href="{{ route('types.destroy', $type) }}"
                            onclick="event.preventDefault();
                                          document.getElementById('delete-{{ $type->id}}').submit();">
                             {{ __('Delete') }}
                         </a>
 
-                        <form id="delete-{{ $type->id }}" action="{{ route('apparatus.destroy', $type) }}" method="POST" style="display: none;">
+                        <form id="delete-{{ $type->id }}" action="{{ route('types.destroy', $type) }}" method="POST" style="display: none;">
                             @csrf
                             @method('DELETE')
                         </form>
@@ -39,7 +39,7 @@
                 @endforeach
               @else
                 <tr>
-                  <td colspan="100%">There are no departments yet!</td>
+                  <td colspan="100%">There are no records yet!</td>
                 </tr>
               @endif
             </tbody>

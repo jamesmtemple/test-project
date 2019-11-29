@@ -46,24 +46,4 @@
 
             return $permissions->pluck('slug')->contains($name);
         }
-
-        public function hasSection($name) {
-            $showSection = false;
-            $permissions = Permission::where('category', $name)->get();
-
-            foreach($this->roles as $role) {
-                foreach($permissions as $permission) {
-                    $showSection = ($role->hasPermission($permission->name)) ? true : $showSection;
-                }
-
-            }
-
-            foreach($this->certifications as $certification) {
-              foreach($permissions as $permission) {
-                  $showSection = ($certification->hasPermission($permission->name)) ? true : $showSection;
-              }
-            }
-
-            return $showSection;
-        }
     }

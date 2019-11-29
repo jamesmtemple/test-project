@@ -26,11 +26,19 @@
           return $this->belongsToMany(Permission::class);
         }
 
+        public function types() {
+          return $this->belongsToMany(Type::class);
+        }
+
         public function hasPermission($name) {
-            $list = $this->permissions->map(function ($item, $key) {
-                return $item->name;
+            $list = $this->permissions->map(function ($item, $key) use ($name ) {
+                return $item->slug;
             });
 
             return $list->contains($name);
+        }
+
+        public function hasUnit($name) {
+            return $this->types->pluck('name')->contains($name);
         }
     }

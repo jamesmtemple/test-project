@@ -9,12 +9,12 @@
 
               <div class="form-group">
                   <label for="name">Name</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="Certification Name...." value="{{ old('name') }}">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Certification Name...." v-model="name">
               </div>
 
               <div class="form-group">
                   <label for="abbr">Abbreviation</label>
-                  <input type="text" class="form-control" id="abbr" name="abbr" placeholder="Certification Abbreviation...." value="{{ old('abbr') }}">
+                  <input type="text" class="form-control" id="abbr" name="abbr" placeholder="Certification Abbreviation...." v-model="abbr">
               </div>
 
               <div class="form-group">
@@ -27,7 +27,7 @@
 
               <div v-if="type == 1" class="form-group">
                   <label >Department</label>
-                  <select class="form-control" name="department_id">
+                  <select class="form-control" name="department_id" v-model="department" @change="onChange">
                     <option value="0">Select a Department...</option>
                     @foreach($departments as $department)
                       <option value="{{ $department->id }}">{{ $department->name }}</option>
@@ -45,19 +45,39 @@
                   </select>
               </div>
 
+              <div class="form-group">
+                <h4>Fire Units</h4>
+                  @foreach($types->where('type',1) as $type)
+                      <div>
+                        <div class="display-block">
+                          <label><input type="checkbox" name="types[]" value="{{ $type->id }}" /> {{ $type->name }}</label>
+                        </div>
+                      </div>
+                  @endforeach
+              </div>
+
+              <div class="form-group">
+                <h4>Law Enforcement</h4>
+                  @foreach($types->where('type',2) as $type)
+                      <div>
+                        <div class="display-block">
+                          <label><input type="checkbox" name="types[]" value="{{ $type->id }}" /> {{ $type->name }}</label>
+                        </div>
+                      </div>
+                  @endforeach
+              </div>
+
               <h4>Permissions</h4>
 
               <div class="row">
                 @foreach($permissions as $group => $chunk)
-                  <div class="display-block">
+                  <div class="col-4 display-block">
                     <span>{{ ucwords(str_replace("-", " ", $group)) }}</span>
 
                     @foreach($chunk as $permission)
-
                       <div>
-                      <label for="{{ $permission->name }}">
                         <div class="display-block">
-                          <input type="checkbox" name="permissions[]" value="{{ $permission->id }}" /> {{ $permission->description }}</label>
+                          <label><input type="checkbox" name="permissions[]" value="{{ $permission->id }}" /> {{ $permission->description }}</label>
                         </div>
                       </div>
                     @endforeach
@@ -76,7 +96,17 @@
                 el: "#app",
 
                 data: {
-                  type: "1"
+                  name: "{{ request()->get('name') }}",
+                  abbr: "{{ request()->get('abbr') }}",
+                  type: "{{ request()->get('type', '1') }}",
+                  department: "{{ request()->get('dept') }}"
+                },
+
+                methods: {
+                  onChange: function(event) {
+                      let q = "name=" + this.name + "&abbr=" + this.abbr + "&type=" + this.type + "&dept=" + event.target.value;
+                      window.location.replace("/certifications/create?" + q);
+                  }
                 }
             })
         </script>

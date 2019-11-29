@@ -1,30 +1,28 @@
 @extends('layouts.app')
-    @section('section','Apparatus')
-    @section('title',"Edit '" . $unit->name . "'")
+    @section('section','Unit Types')
+    @section('title',"Edit '" . $type->name . "'")
 
     @section('content')
         <div class="col-6">
-          <form action="{{ route('apparatus.update', $unit) }}" method="POST">
+          <form action="{{ route('types.update', $type) }}" method="POST">
               @csrf
               @method('patch')
 
               <div class="form-group">
                   <label for="name">Name</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="Apparatus Name...." value="{{ old('name', $unit->name) }}">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Unit Type Name...." value="{{ old('name', $type->name) }}">
               </div>
 
               <div class="form-group">
                   <label for="abbr">Abbreviation</label>
-                  <input type="text" class="form-control" id="abbr" name="abbr" placeholder="Apparatus Abbreviation...." value="{{ old('abbr', $unit->abbr) }}">
+                  <input type="text" class="form-control" id="abbr" name="abbr" placeholder="Unit Type Abbreviation...." value="{{ old('abbr', $type->abbr) }}">
               </div>
 
               <div class="form-group">
-                  <label for="color">Department</label>
-
-                  <select name="department_id" class="form-control">
-                    @foreach($departments as $department)
-                        <option value="{{ $department->id }}" @if($department->id === $unit->department_id) selected @endif>{{ $department->name }}</option>
-                    @endforeach
+                  <label for="abbr">Type</label>
+                  <select class="form-control" name="type">
+                    <option value="1">First & Rescue</option>
+                    <option value="2">Law Enforcement</option>
                   </select>
               </div>
 

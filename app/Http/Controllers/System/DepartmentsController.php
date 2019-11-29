@@ -4,6 +4,8 @@
     use Illuminate\Support\Facades\Cache;
     use App\Models\Department;
     use Illuminate\Support\Facades\Redirect;
+    use App\Models\Type;
+    use App\Models\Permission;
 
     class DepartmentsController extends Controller
     {
@@ -29,7 +31,17 @@
          */
         public function create()
         {
-            return view('system.departments.create');
+            $types = Cache::remember("types", 10080, function() {
+                return Type::all();
+            });
+
+            $permissions = Cache::remember("permissions", 10080, function() {
+                return Permission::all();
+            });
+
+            return view('system.departments.create')
+              ->withTypes($types)
+              ->withPermissions($permissions->groupBy('category'));
         }
 
         /**
@@ -46,9 +58,18 @@
                 'type'          => ['required']
             ]);
 
-            Department::create($attributes);
+            $department = Department::create($attributes);
+            $department
+              ->types()
+              ->attach($request->types);
+            $department
+                ->permissions()
+                ->attach($request->permissions);
 
-            Cache::forget("departments");
+                Cache::forget("departments");
+                Cache::forget("divisions");
+                Cache::forget("certifications");
+                Cache::forget("roles");;
 
             return Redirect::route("departments.index")
               ->with([
@@ -66,8 +87,18 @@
          */
         public function edit(Department $department)
         {
+            $types = Cache::remember("types", 10080, function() {
+                return Type::all();
+            });
+
+            $permissions = Cache::remember("permissions", 10080, function() {
+                return Permission::all();
+            });
+
             return view('system.departments.edit')
-              ->withDepartment($department);
+              ->withDepartment($department)
+              ->withTypes($types)
+              ->withPermissions($permissions->groupBy('category'));
         }
 
         /**
@@ -86,8 +117,17 @@
               ]);
 
               $department->update($attributes);
+              $department
+                ->types()
+                ->sync($request->types);
+              $department
+                  ->permissions()
+                  ->sync($request->permissions);
 
-              Cache::forget("departments");
+                  Cache::forget("departments");
+                  Cache::forget("divisions");
+                  Cache::forget("certifications");
+                  Cache::forget("roles");
 
               return Redirect::route("departments.index")
                 ->with([
@@ -107,6 +147,9 @@
             $department->delete();
 
             Cache::forget("departments");
+            Cache::forget("divisions");
+            Cache::forget("certifications");
+            Cache::forget("roles");
 
             return Redirect::route("departments.index")
               ->with([

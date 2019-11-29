@@ -16,4 +16,12 @@
 
             return $this->department->name;
         }
+
+        public function types() {
+            return $this->belongsToMany(Type::class);
+        }
+
+        public function hasUnit($name) {
+            return $this->types->pluck('name')->contains($name);
+        }
     }

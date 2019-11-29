@@ -21,4 +21,21 @@
                 return "Law Enforcement";
             }
         }
+
+        public function types() {
+          return $this->belongsToMany(Type::class);
+        }
+
+        public function permissions() {
+          return $this->belongsToMany(Permission::class);
+        }
+
+
+        public function hasUnit($name) {
+            return $this->types->pluck('name')->contains($name);
+        }
+
+        public function hasPermission($name) {
+            return $this->permissions->pluck('slug')->contains($name);
+        }
     }

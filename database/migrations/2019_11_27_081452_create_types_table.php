@@ -14,14 +14,12 @@ class CreateTypesTable extends Migration
     public function up()
     {
         Schema::create('types', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
 
             $table->string('name');
             $table->string('abbr');
 
             $table->boolean('type');
-            $table->integer('department_id')->nullable();
-            $table->integer('division_id')->nullable();
 
             $table->timestamps();
         });
@@ -29,7 +27,7 @@ class CreateTypesTable extends Migration
 
     /**
      * Reverse the migrations.
-     * 
+     *
      * @return void
      */
     public function down()

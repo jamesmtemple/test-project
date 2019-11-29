@@ -28,6 +28,28 @@
                   </select>
               </div>
 
+              <div class="form-group">
+                <h4>Fire Units</h4>
+                  @foreach($types->where('type',1) as $type)
+                      <div>
+                        <div class="display-block">
+                          <label><input type="checkbox" name="types[]" value="{{ $type->id }}" @if($type->id == $division->hasUnit($type->name)) checked @endif /> {{ $type->name }}</label>
+                        </div>
+                      </div>
+                  @endforeach
+              </div>
+
+              <div class="form-group">
+                <h4>Law Enforcement</h4>
+                  @foreach($types->where('type',2) as $type)
+                      <div>
+                        <div class="display-block">
+                          <label><input type="checkbox" name="types[]" value="{{ $type->id }}" @if($type->id == $division->hasUnit($type->name)) checked @endif /> {{ $type->name }}</label>
+                        </div>
+                      </div>
+                  @endforeach
+              </div>
+
 
               <button class="btn btn-primary">Save</button>
           </form>

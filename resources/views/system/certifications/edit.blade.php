@@ -28,7 +28,7 @@
 
               <div v-if="type == 1" class="form-group">
                   <label >Department</label>
-                  <select class="form-control" name="department_id">
+                  <select class="form-control" name="department_id" @change="onChange">
                     <option value="0">Select a Department...</option>
                     @foreach($departments as $department)
                       <option value="{{ $department->id }}" @if($certification->department_id == $department->id) selected @endif>{{ $department->name }}</option>
@@ -46,19 +46,39 @@
                   </select>
               </div>
 
+              <div class="form-group">
+                <h4>Fire Units</h4>
+                  @foreach($types->where('type',1) as $type)
+                      <div>
+                        <div class="display-block">
+                          <label><input type="checkbox" name="types[]" value="{{ $type->id }}" @if($certification->hasUnit($type->name)) checked @endif /> {{ $type->name }}</label>
+                        </div>
+                      </div>
+                  @endforeach
+              </div>
+
+              <div class="form-group">
+                <h4>Law Enforcement</h4>
+                  @foreach($types->where('type',2) as $type)
+                      <div>
+                        <div class="display-block">
+                          <label><input type="checkbox" name="types[]" value="{{ $type->id }}" @if($certification->hasUnit($type->name)) checked @endif/> {{ $type->name }}</label>
+                        </div>
+                      </div>
+                  @endforeach
+              </div>
+
               <h4>Permissions</h4>
 
               <div class="row">
                 @foreach($permissions as $group => $chunk)
-                  <div class="display-block">
+                  <div class="col-4 display-block">
                     <span>{{ ucwords(str_replace("-", " ", $group)) }}</span>
-
 
                     @foreach($chunk as $permission)
                       <div>
-                      <label for="{{ $permission->name }}">
                         <div class="display-block">
-                          <input type="checkbox" name="permissions[]" value="{{ $permission->id }}" @if($certification->hasPermission($permission->name)) checked @endif/> {{ $permission->description }}</label>
+                          <label><input type="checkbox" name="permissions[]" value="{{ $permission->id }}" @if($certification->hasPermission($permission->slug)) checked @endif/> {{ $permission->description }}</label>
                         </div>
                       </div>
                     @endforeach
@@ -77,7 +97,13 @@
                 el: "#app",
 
                 data: {
-                  type: "{{ $certification->type }}"
+                  type: "1",
+                },
+
+                methods: {
+                  onChange: function(event) {
+                      window.location.replace("/certifications/edit?dept=" + event.target.value);
+                  }
                 }
             })
         </script>

@@ -6,6 +6,7 @@
     use App\Models\Permission;
     use App\Models\Department;
     use App\Models\Division;
+    use App\Models\Type;
     use Illuminate\Support\Facades\Redirect;
 
     class CertificationsController extends Controller
@@ -30,9 +31,13 @@
          *
          * @return \Illuminate\Http\Response
          */
-        public function create()
+        public function create(Request $request)
         {
-            $permissions = Cache::remember("permissions", 10080, function(){
+            if($request->get('dept')) {
+              $deptPermissions = Department::find($request->get('dept'))->permissions;
+            }
+
+            $permissions = ($request->get('dept')) ? $deptPermissions : Cache::remember("permissions", 10080, function(){
                 return Permission::all();
             });
 
@@ -44,10 +49,15 @@
                 return Division::all();
             });
 
+            $types = Cache::remember("types", 10080,  function() {
+                return Type::all();
+            });
+
             return view('system.certifications.create')
               ->withPermissions($permissions->groupBy('category'))
               ->withDivisions($divisions)
-              ->withDepartments($departments);
+              ->withDepartments($departments)
+              ->withTypes($types);
         }
 
         /**
@@ -66,9 +76,13 @@
                 'division_id'   => ['sometimes']
             ]);
 
-            Certification::create($attributes)
+            $cert = Certification::create($attributes);
+            $cert
               ->permissions()
               ->attach($request->permissions);
+            $cert
+              ->types()
+              ->attach($request->types);
 
             Cache::forget("certifications");
 
@@ -87,10 +101,6 @@
          */
         public function edit(Certification $certification)
         {
-            $permissions = Cache::remember("permissions", 10080, function(){
-                return Permission::all();
-            });
-
             $departments = Cache::remember("departments", 10080, function(){
                 return Department::all();
             });
@@ -99,11 +109,16 @@
                 return Division::all();
             });
 
+            $types = Cache::remember("types", 10080,  function() {
+                return Type::all();
+            });
+
             return view('system.certifications.edit')
               ->withCertification($certification)
-              ->withPermissions($permissions->groupBy('category'))
               ->withDivisions($divisions)
-              ->withDepartments($departments);
+              ->withDepartments($departments)
+              ->withTypes($types)
+              ->withPermissions($certification->department->permissions->groupBy('category'));
         }
 
         /**
@@ -127,6 +142,9 @@
             $certification
               ->permissions()
               ->sync($request->permissions);
+            $certification
+              ->types()
+              ->sync($request->types);
 
             Cache::forget("certifications");
 

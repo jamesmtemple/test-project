@@ -7,6 +7,7 @@
   use App\Models\Division;
   use Illuminate\Support\Facades\Cache;
   use Illuminate\Support\Facades\Redirect;
+  use App\Models\Type;
 
   class RolesController extends Controller
   {
@@ -44,10 +45,15 @@
               return Division::all();
           });
 
+          $types = Cache::remember("types", 10080, function(){
+              return Type::all();
+          });
+
           return view('system.roles.create')
             ->withPermissions($permissions->groupBy('category'))
             ->withDivisions($divisions)
-            ->withDepartments($departments);
+            ->withDepartments($departments)
+            ->withTypes($types);
       }
 
       /**
@@ -65,9 +71,13 @@
               'division_id'   => ['sometimes']
           ]);
 
-          Role::create($attributes)
+          $role = Role::create($attributes);
+          $role
             ->permissions()
-            ->attach($request->roles);
+            ->attach($request->permissions);
+          $role
+            ->types()
+            ->attach($request->types);
 
           Cache::forget("roles");
 
@@ -98,11 +108,16 @@
               return Division::all();
           });
 
+          $types = Cache::remember("types", 10080, function(){
+              return Type::all();
+          });
+
           return view('system.roles.edit')
             ->withRole($role)
             ->withPermissions($permissions->groupBy('category'))
             ->withDivisions($divisions)
-            ->withDepartments($departments);
+            ->withDepartments($departments)
+            ->withTypes($types);
       }
 
       /**
@@ -122,7 +137,12 @@
           ]);
 
           $role->update($attributes);
-          $role->permissions()->sync($request->permissions);
+          $role
+            ->permissions()
+            ->sync($request->permissions);
+          $role
+            ->types()
+            ->sync($request->types);
 
           Cache::forget("roles");
 

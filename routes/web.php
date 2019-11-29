@@ -20,5 +20,21 @@
             Route::middleware('can:divisions.manage')->resource('divisions','DivisionsController');
             Route::middleware('can:certs.manage')->resource('certifications','CertificationsController');
             Route::middleware('can:types.manage')->resource('types','TypesController');
+
+            Route::get('permissions/by-department/{department}','PermissionsController@byDepartment');
+        });
+
+        Route::namespace('Structure')->group(function() {
+            Route::middleware('can:types.manage')->resource('types','TypesController');
+            Route::middleware('can:plans.manage')->resource('plans','PlansController');
+            Route::middleware('can:stations.manage')->resource('stations','StationsController');
+        });
+
+        Route::namespace('Map')->group(function() {
+            Route::middleware('can:streets.manage')->resource('streets','StreetsController');
+            Route::middleware('can:postals.manage')->resource('postals','PostalsController');
+            Route::middleware('can:subpostals.manage')->resource('subpostals','SubpostalsController');
+            Route::middleware('can:trailmarkers.manage')->resource('trailmarkers','TrailmarkersController');
+            Route::middleware('can:grids.manage')->resource('grids','GridsController');
         });
     });

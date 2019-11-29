@@ -43,11 +43,34 @@
                   </div>
               </div>
 
+              <div class="form-group">
+                <h4>Fire Units</h4>
+                  @foreach($types->where('type',1) as $type)
+                      <div>
+                        <div class="display-block">
+                          <label><input type="checkbox" name="types[]" value="{{ $type->id }}" @if($role->hasUnit($type->name)) checked @endif/> {{ $type->name }}</label>
+                        </div>
+                      </div>
+                  @endforeach
+              </div>
+
+              <div class="form-group">
+                <h4>Law Enforcement</h4>
+                  @foreach($types->where('type',2) as $type)
+                      <div>
+                        <div class="display-block">
+                          <label><input type="checkbox" name="types[]" value="{{ $type->id }}" @if($role->hasUnit($type->name)) checked @endif/> {{ $type->name }}</label>
+                        </div>
+                      </div>
+                  @endforeach
+              </div>
+
+
             <h4>Permissions</h4>
 
             <div class="row">
               @foreach($permissions as $group => $chunk)
-                <div class="display-block">
+                <div class="col-4 display-block">
                   <span>{{ ucwords(str_replace("-", " ", $group)) }}</span>
 
 
